@@ -19,6 +19,7 @@ class nginx::package::debian(
     $package_source = 'nginx',
     $package_ensure = 'present'
   ) {
+
   $distro = downcase($::operatingsystem)
 
   package { $package_name:
@@ -28,9 +29,9 @@ class nginx::package::debian(
 
   anchor { 'nginx::apt_repo' : }
 
-  include '::apt'
-
   if $manage_repo {
+    include '::apt'
+
     case $package_source {
       'nginx': {
         apt::source { 'nginx':
@@ -63,6 +64,7 @@ class nginx::package::debian(
     exec { 'apt_get_update_for_nginx':
       command     => '/usr/bin/apt-get update',
       timeout     => 240,
+      returns     => [ 0, 100 ],
       refreshonly => true,
       before      => Anchor['nginx::apt_repo'],
     }

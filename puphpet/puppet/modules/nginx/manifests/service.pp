@@ -14,27 +14,30 @@
 #
 # This class file is not called directly
 class nginx::service(
-  $configtest_enable = $nginx::params::nx_configtest_enable,
-  $service_restart   = $nginx::params::nx_service_restart
+  $configtest_enable = $nginx::configtest_enable,
+  $service_restart   = $nginx::service_restart,
+  $service_ensure    = $nginx::service_ensure,
 ) {
-  exec { 'rebuild-nginx-vhosts':
-    command     => "/bin/cat ${nginx::params::nx_temp_dir}/nginx.d/* > ${nginx::params::nx_conf_dir}/conf.d/vhost_autogen.conf",
-    refreshonly => true,
-    unless      => "/usr/bin/test ! -f ${nginx::params::nx_temp_dir}/nginx.d/*",
-    subscribe   => File["${nginx::params::nx_temp_dir}/nginx.d"],
+
+  $service_enable = $service_ensure ? {
+    running => true,
+    absent => false,
+    stopped => false,
+    'undef' => undef,
+    default => true,
   }
-  exec { 'rebuild-nginx-mailhosts':
-    command     => "/bin/cat ${nginx::params::nx_temp_dir}/nginx.mail.d/* > ${nginx::params::nx_conf_dir}/conf.mail.d/vhost_autogen.conf",
-    refreshonly => true,
-    unless      => "/usr/bin/test ! -f ${nginx::params::nx_temp_dir}/nginx.mail.d/*",
-    subscribe   => File["${nginx::params::nx_temp_dir}/nginx.mail.d"],
+
+  if $service_ensure == 'undef' {
+    $service_ensure_real = undef
+  } else {
+    $service_ensure_real = $service_ensure
   }
+
   service { 'nginx':
-    ensure     => running,
-    enable     => true,
+    ensure     => $service_ensure_real,
+    enable     => $service_enable,
     hasstatus  => true,
     hasrestart => true,
-    subscribe  => Exec['rebuild-nginx-vhosts', 'rebuild-nginx-mailhosts'],
   }
   if $configtest_enable == true {
     Service['nginx'] {
