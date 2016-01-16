@@ -1,6 +1,8 @@
 var express = require('express');
-
-var app = express();
+var app     = express();
+var busboy  = require('connect-busboy');
+var path    = require('path'); // used for file path
+var fs      = require('fs.extra'); // file system - for file manipulation
 
 // set up handlebars view engine
 var handlebars = require('express-handlebars').create({
@@ -19,6 +21,7 @@ app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(__dirname + '/public'));
+app.use(busboy());
 
 // set 'showTests' context property if the querystring contains test=1
 app.use(function(req, res, next){
@@ -28,8 +31,25 @@ app.use(function(req, res, next){
 });
 
 app.get('/', function(req, res) {
-	res.render('home');
+    res.render('home');
 });
+
+app.route('/upload').post(function (req, res, next) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', function(fieldname, file, filename) {
+        console.log("Uploading: " + filename);
+
+        //Path where image will be uploaded
+        fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
+        file.pipe(fstream);
+        fstream.on('close', function() {
+            console.log("Upload Finished of " + filename);
+            res.json({success: true});
+        });
+    });
+});
+
 
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
