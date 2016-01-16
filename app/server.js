@@ -1,8 +1,9 @@
-var express = require('express');
-var app     = express();
-var busboy  = require('connect-busboy');
-var path    = require('path'); // used for file path
-var fs      = require('fs.extra'); // file system - for file manipulation
+var express = require('express'),
+app         = express(),
+tesseract   = require('node-tesseract'),
+busboy      = require('connect-busboy'),
+path        = require('path'), 
+fs          = require('fs.extra');
 
 // set up handlebars view engine
 var handlebars = require('express-handlebars').create({
@@ -39,13 +40,14 @@ app.route('/upload').post(function (req, res, next) {
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
         console.log("Uploading: " + filename);
+        var referenceName = randomStringGenerator();
         //Path where image will be uploaded
-        fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
+        fstream = fs.createWriteStream(__dirname + '/uploads/' + referenceName);
         file.pipe(fstream);
         fstream.on('close', function() {
-            console.log("Upload Finished of " + filename);
+            console.log("Upload Finished of " + referenceName);
             res.json({success: true});
-            runOCR(filename);
+            runOCR(referenceName);
         });
     });
 });
@@ -69,5 +71,21 @@ app.listen(app.get('port'), function(){
 });
 
 function runOCR(filename){
-    var absolutePath = __dirname + '/uploads/' + filename;
+    tesseract.process(__dirname + '/uploads/' + filename, function(err, text) {
+        if(err) {
+            console.error(err);
+        } else {
+            console.log(text);
+        }
+    });
+}
+
+function randomStringGenerator() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
 }
