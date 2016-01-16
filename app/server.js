@@ -39,17 +39,16 @@ app.route('/upload').post(function (req, res, next) {
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
         console.log("Uploading: " + filename);
-
         //Path where image will be uploaded
         fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
         file.pipe(fstream);
         fstream.on('close', function() {
             console.log("Upload Finished of " + filename);
             res.json({success: true});
+            runOCR(filename);
         });
     });
 });
-
 
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
@@ -68,3 +67,7 @@ app.listen(app.get('port'), function(){
   console.log( 'Express started on http://localhost:' + 
     app.get('port') + '; press Ctrl-C to terminate.' );
 });
+
+function runOCR(filename){
+    var absolutePath = __dirname + '/uploads/' + filename;
+}
