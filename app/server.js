@@ -52,6 +52,18 @@ app.route('/upload').post(function (req, res, next) {
     });
 });
 
+app.get('/polling', function(req, res){
+    if(outputQueue.length){
+        res.json({
+            response: outputQueue.pop()
+        });    
+    } else {
+        res.json({
+            response: false
+        });    
+    }
+});
+
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
 	res.status(404);
@@ -70,13 +82,22 @@ app.listen(app.get('port'), function(){
     app.get('port') + '; press Ctrl-C to terminate.' );
 });
 
+var outputQueue = [];
 function runOCR(filename){
     tesseract.process(__dirname + '/uploads/' + filename, function(err, text) {
         if(err) {
             console.error(err);
+            outputQueue.push(err);
         } else {
             console.log(text);
+            outputQueue.push(text);
         }
+        fs.remove(__dirname + '/uploads/' + filename, function(err) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log('success!');
+        });
     });
 }
 

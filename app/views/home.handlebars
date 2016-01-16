@@ -4,14 +4,20 @@
 		<h2>OCR using JavaScript <small>Tesseract Open Source OCR Engine</small></h2>	
 	</div>
 	<hr>
-	<form id="uploadImg" class="columns medium-6">
+	<form id="uploadImg" class="columns medium-4">
 		<label for="fileInput">Please upload an image to perform OCR:
 			<input id="fileInput" name="fileInput" type="file" />
 		</label>
 		<button type="submit" class="button">Upload Image</button>
 	</form>
-	<div id="successCallout" class="columns medium-6 callout success" style="display: none;">
+	<div id="successCallout" class="columns medium-3 end callout success" style="display: none;">
 		<h5>Upload Successful</h5>
 		<p>Processing Your Request</p>	
+	</div>
+	<div class="columns medium-8" style="display: none;">
+		<p>Parsed Text:</p>
+		<code id="ocrText"></code>
+		<br><br>
+		<a href="#" id="tryAgain">Try again</a>
 	</div>
 </div>

@@ -3,6 +3,7 @@
 	var files;
 	$('#fileInput').on('change', prepareUpload);
 	$('#uploadImg').on('submit', uploadFiles);
+	$('#tryAgain').on('click', tryAgain);
 
 	// Grab the files and set them to our variable
 	function prepareUpload(event) {
@@ -31,6 +32,7 @@
 	            if (typeof data.error === 'undefined') {
 	                // Success so call function to process the form
 	                uploadSuccess(event, data);
+	                poll();
 	            } else {
 	                // Handle errors here
 	                console.log('ERRORS: ' + data.error);
@@ -46,5 +48,19 @@
 
 	function uploadSuccess(event, data) {
 		$('#successCallout').show();
+	}
+
+	function poll(){
+	    $.ajax({ url: "/polling", success: function(data){
+	        if(data.response){
+        		$('#ocrText').html(data.response).parent().show();
+        		$('#successCallout').hide();
+	        }
+	    }, dataType: "json", complete: poll, timeout: 30000 });
+	}
+
+	function tryAgain(e){
+		e.preventDefault();
+		window.location.reload();
 	}
 }());
