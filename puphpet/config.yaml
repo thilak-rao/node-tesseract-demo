@@ -7,10 +7,11 @@ vagrantfile:
         memory: '512'
         cpus: '1'
         chosen_provider: virtualbox
+        box_version: ''
         network:
             private_network: 192.168.56.112
             forwarded_port:
-                vflnp_hvgq53p3u4zq:
+                vflnp_e2p12k5uidnc:
                     host: '7519'
                     guest: '22'
         post_up_message: ''
@@ -22,7 +23,9 @@ vagrantfile:
             vmware:
                 numvcpus: 1
             parallels:
-                cpus: 1
+                use_linked_clone: '0'
+                check_guest_tools: '0'
+                update_guest_tools: '0'
         provision:
             puppet:
                 manifests_path: puphpet/puppet/manifests
@@ -31,7 +34,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_v52ci99ye70y:
+            vflsf_mquqyvqh8621:
                 source: ./app
                 target: /home/vagrant/app
                 sync_type: nfs
@@ -66,10 +69,17 @@ vagrantfile:
         insert_key: false
     vagrant:
         host: detect
+    proxy:
+        http: ''
+        https: ''
+        ftp: ''
+        no_proxy: ''
+        enabled: ''
 server:
     install: '1'
     packages:
         - htop
+        - tesseract-ocr
 users_groups:
     install: '1'
     groups: {  }
@@ -99,7 +109,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_2zyyt2dg31ej:
+        nxv_sbifyl9wfmly:
             server_name: node-tesseract.dev
             server_aliases:
                 - www.node-tesseract.dev
@@ -118,7 +128,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_8tw38hbhw89j:
+                nxvl_ofxhatojy2l5:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -129,6 +139,7 @@ nginx:
                     fastcgi_index: ''
                     fastcgi_split_path: ''
                     proxy: 'http://127.0.0.1:3000'
+                    proxy_redirect: 'http://127.0.0.1:3000'
                     proxy_set_header:
                         - 'X-Forwarded-For $remote_addr'
                         - 'Host $http_host'
@@ -147,7 +158,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_9zlsqobnl51y:
+        av_h99fwq29vzck:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -166,7 +177,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_n6h9or35qqq5:
+                avd_ytfbad1x3yiq:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -178,7 +189,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_lvgcdoevgz79:
+                        avdfm_241pp7wks9nx:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -202,7 +213,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_1ocvkompyuka:
+        phpfp_h0vmqxu3wa7x:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -245,7 +256,7 @@ drush:
 ruby:
     install: '1'
     versions:
-        rv_s3gtmrqsf911:
+        rv_718eg4dt7lzg:
             default: '1'
             bundler: '1'
             version: 1.9.3
@@ -290,15 +301,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_ilq4wlti5fds:
+        mariadbnu_0rkfkemp1njf:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_6a28a4rj0519:
+        mariadbnd_ufgrcl4vct8f:
             name: dbname
             sql: ''
     grants:
-        mariadbng_uw5evrru97df:
+        mariadbng_i7e7en5p40wm:
             user: dbuser
             table: '*.*'
             privileges:
@@ -311,15 +322,15 @@ mysql:
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_2p1lhe4nnvas:
+        mysqlnu_igcwoih05qgb:
             name: dbuser
             password: '123'
     databases:
-        mysqlnd_cnheypbf35ji:
+        mysqlnd_pzqpctuhndcd:
             name: dbname
             sql: ''
     grants:
-        mysqlng_9ipcm152ev5n:
+        mysqlng_jdhszonnbrlw:
             user: dbuser
             table: '*.*'
             privileges:
@@ -384,6 +395,7 @@ elastic_search:
     settings:
         version: 2.1.0
         java_install: true
+    instances: {  }
 solr:
     install: '0'
     settings:

@@ -17,8 +17,8 @@ mod 's12v/blackfire',
     :git => 'https://github.com/s12v/puppet-blackfire.git',
     :ref => '1.4.0'
 mod 'tPl0ch/composer',
-    :git => 'https://github.com/tPl0ch/puppet-composer.git',
-    :ref => '463bc769f7377a6aff4cd93ba9ca301210618c98'
+    :git => 'https://github.com/puphpet/puppet-composer.git',
+    :ref => '2cad1a23ca4fd3e03171a60a09c711e6e5097894'
 mod 'puppetlabs/concat',
     :git => 'https://github.com/puppetlabs/puppetlabs-concat.git',
     :ref => '1.1.1'
@@ -63,7 +63,7 @@ mod 'puppetlabs/postgresql',
     :ref => '4.6.0'
 mod 'puphpet/puphpet',
     :git => 'https://github.com/puphpet/puppet-puphpet.git',
-    :ref => '186bb745268836201c3bb4ec10f015aa7d272bc9'
+    :ref => '7165feca5c3c2c0ab91817a939fe889a14fff07f'
 mod 'example42/puppi',
     :git => 'https://github.com/example42/puppi.git',
     :ref => 'fe711883625bf4848d5f62b4fd64af7dddf6c424'
